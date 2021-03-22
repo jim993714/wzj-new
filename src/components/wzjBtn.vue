@@ -9,7 +9,7 @@ export default {
   methods: {
     login() {
       // 触发父组件身上的登录事件,发送请求
-      this.$emit('login');
+      this.$emit('click');
     },
   },
 };

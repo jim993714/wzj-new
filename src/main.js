@@ -20,12 +20,17 @@ import wzjHead from './components/wzjHead.vue';
 import wzjLog from './components/wzjLog.vue';
 import wzjBtn from './components/wzjBtn.vue';
 import wzjInput from './components/wzjinput.vue';
+import navBar from './components/navBar.vue';
 // 注册全局组件
 Vue.component('wzj-head', wzjHead);
 Vue.component('wzj-log', wzjLog);
 Vue.component('wzj-btn', wzjBtn);
 Vue.component('wzj-input', wzjInput);
+Vue.component('nav-bar', navBar);
+// 按需引入vant并且使用
+import { Toast } from 'vant';
 
+Vue.use(Toast);
 new Vue({
   router,
   render: (h) => h(App),
