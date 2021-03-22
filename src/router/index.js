@@ -20,5 +20,17 @@ const router = new VueRouter({
   ],
 });
 
+// 登录拦截,判断跳转的地址是否带有token,如果有则跳转,没有则跳转回登录页
+router.beforeEach((to, from, next) => {
+  let token = localStorage.getItem('token');
+  if (to.path == '/user') {
+    if (token) {
+      next();
+    } else {
+      next('/login');
+    }
+  }
+  next();
+});
 // 导出路由
 export default router;

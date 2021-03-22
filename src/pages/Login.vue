@@ -60,6 +60,8 @@ export default {
         }).then((res) => {
           if (res.data.statusCode == 200) {
             // 如果状态码为200,则登录成功并且跳转页面
+            localStorage.setItem('token', res.data.data.token);
+            localStorage.setItem('id', res.data.data.user.id);
             this.$router.push('/user');
             //显示提示信息
             this.$toast.success(res.data.message);

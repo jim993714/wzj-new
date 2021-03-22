@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar" @click="edit">
     <div class="left">
       <span>{{ title }}</span>
     </div>
@@ -18,6 +18,11 @@ export default {
       required: true,
     },
     content: String,
+  },
+  methods: {
+    edit() {
+      this.$emit('edit');
+    },
   },
 };
 </script>
