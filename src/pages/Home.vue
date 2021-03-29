@@ -60,7 +60,8 @@ export default {
   },
   methods: {
     async gettablis(id) {
-      // 发送请求,渲染文章列表
+      // 发送请求,渲染文章列表是吗
+
       const res = await this.$axios({
         method: 'get',
         url: '/post',
