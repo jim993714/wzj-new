@@ -5,7 +5,7 @@
       <div class="left">
         <img :src="$axios.defaults.baseURL + info.head_img" alt="" />
       </div>
-      <div class="center">
+      <div class="center" @click="$router.push('./Edit')">
         <span v-if="info.gender == 1" class="iconfont iconxingbienan"></span>
         <span v-else class="iconfont iconxingbienv"></span>
         <span>{{ info.nickname }}</span>
@@ -17,31 +17,30 @@
         <span class="iconfont iconjiantou1"></span>
       </div>
     </div>
-    <nav-bar title="我的关注" content="关注的用户"></nav-bar>
-    <nav-bar title="我的跟帖" content="跟帖/回复"></nav-bar>
-    <nav-bar title="我的收藏" content="文章/视频"></nav-bar>
-    <nav-bar title="设置"></nav-bar>
-    <nav-bar title="退出" @edit="edit"></nav-bar>
+    <nav-bar
+      title="我的关注"
+      content="关注的用户"
+      @click="$router.push('/myfollow')"
+    ></nav-bar>
+    <nav-bar
+      title="我的跟帖"
+      content="跟帖/回复"
+      @click="$router.push('/mycomment')"
+    ></nav-bar>
+    <nav-bar
+      title="我的收藏"
+      content="文章/视频"
+      @click="$router.push('/myactive')"
+    ></nav-bar>
+    <nav-bar title="设置" @click="$router.push('/Edit')"></nav-bar>
+    <nav-bar title="退出" @click="edit"></nav-bar>
   </div>
 </template>
 
 <script>
 export default {
   created() {
-    // 将ID和token 存到本地缓存中
-    let id = localStorage.getItem('id');
-    let token = localStorage.getItem('token');
-    // 发送请求获取用户的信息
-    this.$axios({
-      method: 'get',
-      url: `/user/${id}`,
-      headers: {
-        Authorization: token,
-      },
-    }).then((res) => {
-      const { data } = res.data;
-      this.info = data;
-    });
+    this.render();
   },
   data() {
     return {
@@ -49,19 +48,30 @@ export default {
     };
   },
   methods: {
-    edit() {
-      this.$dialog
-        .confirm({
+    async edit() {
+      try {
+        await this.$dialog.confirm({
           title: '温馨提示',
           message: '确定退出登录?',
-        })
-        .then(() => {
-          // 点击确认,删除本地缓存的token和ID 并跳转
-          localStorage.removeItem('token');
-          localStorage.removeItem('id');
-          this.$router.push('/login');
-        })
-        .catch(() => {});
+        });
+        // 点击确认,删除本地缓存的token和ID 并跳转
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+        this.$router.push('/login');
+      } catch {
+        return;
+      }
+    },
+    async render() {
+      let id = localStorage.getItem('id');
+      const res = await this.$axios({
+        method: 'get',
+        url: `/user/${id}`,
+      });
+      const { data, statusCode } = res.data;
+      if (statusCode == 200) {
+        this.info = data;
+      }
     },
   },
 };
@@ -81,6 +91,7 @@ export default {
       img {
         border-radius: 50%;
         width: 70px;
+        height: 70px;
       }
     }
     .right {

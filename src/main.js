@@ -13,15 +13,34 @@ import router from './router';
 Vue.config.productionTip = false;
 
 // 按需引入vant并且使用
-import { Toast, Dialog } from 'vant';
+import {
+  Toast,
+  Dialog,
+  Field,
+  Cell,
+  CellGroup,
+  Radio,
+  RadioGroup,
+  Uploader,
+  Button,
+  List,
+} from 'vant';
 
 Vue.use(Toast);
+Vue.use(Button);
 Vue.use(Dialog);
+Vue.use(Field);
+Vue.use(Cell);
+Vue.use(CellGroup);
+Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(Uploader);
+Vue.use(List);
 // 引入moment 创建全局过滤器
 import moment from 'moment';
 // 过滤时间格式
-Vue.filter('date', (input) => {
-  return moment(input).format('YYYY-MM-DD');
+Vue.filter('date', (input, format = 'YYYY-MM-DD') => {
+  return moment(input).format(format);
 });
 // 引入axios插件 并绑定到vue原型上
 import axios from 'axios';
@@ -35,6 +54,16 @@ axios.interceptors.response.use((res) => {
     localStorage.removeItem('token');
   }
   return res;
+});
+
+//设置统一的tonken
+axios.interceptors.request.use((config) => {
+  // console.log(config);
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
 });
 Vue.prototype.$axios = axios;
 // 引入已经写好的通用组件

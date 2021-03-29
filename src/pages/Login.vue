@@ -40,7 +40,7 @@ export default {
     this.password = this.$route.params.password;
   },
   methods: {
-    login() {
+    async login() {
       // 在发送请求前,先进行校验,如果用户名和密码都通过校验才能发送请求
       if (!this.$refs.password.verification(this.password)) {
         return;
@@ -50,26 +50,26 @@ export default {
       }
       if (this.username && this.password) {
         // 使用axios发送请求
-        this.$axios({
+        const res = await this.$axios({
           method: 'post',
           url: '/login',
           data: {
             username: this.username,
             password: this.password,
           },
-        }).then((res) => {
-          if (res.data.statusCode == 200) {
-            // 如果状态码为200,则登录成功并且跳转页面
-            localStorage.setItem('token', res.data.data.token);
-            localStorage.setItem('id', res.data.data.user.id);
-            this.$router.push('/user');
-            //显示提示信息
-            this.$toast.success(res.data.message);
-          }
-          if (res.data.statusCode == 401) {
-            this.$toast.fail(res.data.message);
-          }
         });
+        const { statusCode, data, message } = res.data;
+        if (statusCode == 200) {
+          // 如果状态码为200,则登录成功并且跳转页面
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('id', data.user.id);
+          this.$router.push('/user');
+          //显示提示信息
+          this.$toast.success(message);
+        }
+        if (statusCode == 401) {
+          this.$toast.fail(message);
+        }
       }
     },
   },

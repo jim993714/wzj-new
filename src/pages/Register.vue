@@ -41,7 +41,7 @@ export default {
     };
   },
   methods: {
-    register() {
+    async register() {
       //发送注册请求之前,先进行校验,校验通过才能发送请求
       if (!this.$refs.username.verification(this.username)) {
         return;
@@ -53,7 +53,7 @@ export default {
         return;
       }
       if (this.password && this.username && this.nickname) {
-        this.$axios({
+        const res = await this.$axios({
           url: '/register',
           method: 'post',
           data: {
@@ -61,17 +61,17 @@ export default {
             nickname: this.nickname,
             password: this.password,
           },
-        }).then((res) => {
-          if (res.data.statusCode == 200) {
-            this.$router.push({
-              name: 'login',
-              params: {
-                username: this.username,
-                password: this.password,
-              },
-            });
-          }
         });
+        const { statusCode } = res.data;
+        if (statusCode == 200) {
+          this.$router.push({
+            name: 'login',
+            params: {
+              username: this.username,
+              password: this.password,
+            },
+          });
+        }
       }
     },
   },
