@@ -24,6 +24,8 @@ import {
   Uploader,
   Button,
   List,
+  Tab,
+  Tabs,
 } from 'vant';
 
 Vue.use(Toast);
@@ -36,6 +38,8 @@ Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(Uploader);
 Vue.use(List);
+Vue.use(Tab);
+Vue.use(Tabs);
 // 引入moment 创建全局过滤器
 import moment from 'moment';
 // 过滤时间格式

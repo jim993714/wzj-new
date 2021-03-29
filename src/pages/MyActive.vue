@@ -33,8 +33,10 @@ export default {
     async render() {
       const res = await this.$axios.get('/user_star');
       const { data, statusCode } = res.data;
-      this.info = data;
-      console.log(this.info);
+      if (statusCode == 200) {
+        this.info = data;
+      }
+      // console.log(this.info);
     },
   },
 };

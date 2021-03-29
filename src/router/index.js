@@ -13,6 +13,7 @@ import MyFollow from '../pages/MyFollow.vue';
 import MyComment from '../pages/MyComment.vue';
 import MyActive from '../pages/MyActive.vue';
 import Home from '../pages/Home.vue';
+import Search from '../pages/Search.vue';
 // 创建路由实例 并进行配置路由
 const router = new VueRouter({
   routes: [
@@ -32,6 +33,8 @@ const router = new VueRouter({
     { path: '/mycomment', name: 'mycomment', component: MyComment },
     // 配置我的收藏
     { path: '/myactive', name: 'myactive', component: MyActive },
+    // 搜索页面路由配置
+    { path: '/search', name: 'search', component: Search },
   ],
 });
 
