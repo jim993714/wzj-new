@@ -1,20 +1,7 @@
 <template>
   <div class="my-active">
     <wzj-head>我的收藏</wzj-head>
-    <div class="main" v-for="item in info" :key="item.id">
-      <div class="left">
-        <div class="title">
-          {{ item.title }}
-        </div>
-        <div class="text">
-          <span>{{ item.user.nickname }}</span>
-          <span>{{ item.comments.length }}跟帖</span>
-        </div>
-      </div>
-      <div class="right">
-        <img :src="item.cover[0].url" alt="" />
-      </div>
-    </div>
+    <tab-nav :data="info"></tab-nav>
   </div>
 </template>
 

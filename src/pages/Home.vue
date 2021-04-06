@@ -20,18 +20,16 @@
     <van-tabs v-model="active" sticky :swipeable="true">
       <van-tab :title="item.name" v-for="item in tablis" :key="item.id">
         <!-- 文章列表渲染的内容 -->
-        <div class="info" v-for="item in tabnav" :key="item.id">
-          <div class="left">
-            <div class="title">{{ item.title }}</div>
-            <div class="text">
-              <span>{{ item.user.nickname }}</span>
-              <span>{{ item.comment_length }}跟帖</span>
-            </div>
-          </div>
-          <div class="right">
-            <img :src="$axios.defaults.baseURL + item.cover[0].url" alt="" />
-          </div>
-        </div>
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          :immediate-check="false"
+          @load="onLoad"
+          :offset="30"
+        >
+          <tab-nav :data="tabnav"></tab-nav>
+        </van-list>
       </van-tab>
     </van-tabs>
   </div>
@@ -46,6 +44,13 @@ export default {
       // 获取的列表数据
       tablis: '',
       tabnav: '',
+      // 是否是出于加载状态
+      loading: false,
+      // 数据加载完了将值改成true
+      finished: false,
+      // 发送请求的页数
+      pageindex: 0,
+      pagesize: 5,
     };
   },
   async created() {
@@ -54,33 +59,50 @@ export default {
     const { data, statusCode } = res.data;
     if (statusCode == 200) {
       this.tablis = data;
-      console.log(this.tablis);
+      // console.log(this.tablis);
       this.gettablis(this.tablis[this.active].id);
     }
   },
   methods: {
+    async onLoad() {
+      console.log('发送请求');
+      this.pageindex++;
+      this.gettablis(this.tablis[this.active].id);
+    },
     async gettablis(id) {
       // 发送请求,渲染文章列表是吗
-
+      this.pageindex++;
       const res = await this.$axios({
         method: 'get',
         url: '/post',
         params: {
           category: id,
+          pageSize: this.pagesize,
+          pageIndex: this.pageindex,
         },
       });
       const { data, statusCode } = res.data;
       if (statusCode == 200) {
-        this.tabnav = data;
+        this.tabnav = [...this.tabnav, ...data];
+        // 如果请求成功,添加数据并且将loading改成false
+        this.loading = false;
         console.log(this.tabnav);
+      }
+      if (data.length < this.pagesize) {
+        // 拿去的数据的长度小于pageSize,说明没有数据了,将finished改城true ,显示没有更多了
+        this.finished = true;
       }
     },
   },
+
   watch: {
     active(value) {
       // 当active的值变化时,将值改变,并且调用方法渲染文章列表
       this.active = value;
-      console.log(this.tablis[this.active].id);
+      this.pageindex = 0;
+      this.tabnav = [];
+      this.finished = false;
+      // console.log(this.tablis[this.active].id);
       this.gettablis(this.tablis[this.active].id);
     },
   },
