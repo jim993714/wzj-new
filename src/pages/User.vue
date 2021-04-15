@@ -32,6 +32,7 @@
       content="文章/视频"
       @click="$router.push('/myactive')"
     ></nav-bar>
+    <nav-bar title="栏目管理" @click="$router.push('/tabList')"></nav-bar>
     <nav-bar title="设置" @click="$router.push('/Edit')"></nav-bar>
     <nav-bar title="退出" @click="edit"></nav-bar>
   </div>

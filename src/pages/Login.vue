@@ -38,6 +38,7 @@ export default {
   created() {
     this.username = this.$route.params.username;
     this.password = this.$route.params.password;
+    console.log(this.$route.params);
   },
   methods: {
     async login() {
@@ -63,6 +64,12 @@ export default {
           // 如果状态码为200,则登录成功并且跳转页面
           localStorage.setItem('token', data.token);
           localStorage.setItem('id', data.user.id);
+          // 如果是没有登录被拦截过来的用户则返回到之前的页面
+          if (this.$route.params.back) {
+            this.$router.back();
+            this.$toast.success(message);
+            return;
+          }
           this.$router.push('/user');
           //显示提示信息
           this.$toast.success(message);

@@ -14,6 +14,8 @@ import MyComment from '../pages/MyComment.vue';
 import MyActive from '../pages/MyActive.vue';
 import Home from '../pages/Home.vue';
 import Search from '../pages/Search.vue';
+import detail from '../pages/deTail.vue';
+import tabList from '../pages/tabList.vue';
 // 创建路由实例 并进行配置路由
 const router = new VueRouter({
   routes: [
@@ -35,6 +37,10 @@ const router = new VueRouter({
     { path: '/myactive', name: 'myactive', component: MyActive },
     // 搜索页面路由配置
     { path: '/search', name: 'search', component: Search },
+    // 新闻详情页面
+    { path: '/detail/:id', name: 'detail', component: detail },
+    // 栏目管理页面
+    { path: '/tabList', name: 'tabList', component: tabList },
   ],
 });
 

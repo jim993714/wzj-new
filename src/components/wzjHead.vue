@@ -12,6 +12,7 @@ export default {};
 
 <style lang="less" scoped>
 .wzj-head {
+  padding: 5px 10px;
   line-height: 30px;
   font-size: 16px;
   display: flex;

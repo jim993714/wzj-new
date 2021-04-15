@@ -19,17 +19,21 @@
     <!-- tab栏 使用vant ui的tab 组件 -->
     <van-tabs v-model="active" sticky :swipeable="true">
       <van-tab :title="item.name" v-for="item in tablis" :key="item.id">
-        <!-- 文章列表渲染的内容 -->
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :immediate-check="false"
-          @load="onLoad"
-          :offset="30"
-        >
-          <tab-nav :data="tabnav"></tab-nav>
-        </van-list>
+        <!-- 下拉刷新 -->
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+          <!-- 文章列表渲染的内容 -->
+
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            :immediate-check="false"
+            @load="onLoad"
+            :offset="30"
+          >
+            <tab-nav :data="tabnav"></tab-nav>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -37,8 +41,11 @@
 
 <script>
 export default {
+  name: 'home',
   data() {
     return {
+      // 空下拉刷新
+      isLoading: false,
       // 控制tab栏的数据属性
       active: 0,
       // 获取的列表数据
@@ -53,19 +60,36 @@ export default {
       pagesize: 5,
     };
   },
-  async created() {
+  created() {
     // 进入页面获取数据,渲染tablit
-    const res = await this.$axios.get('/category');
-    const { data, statusCode } = res.data;
-    if (statusCode == 200) {
-      this.tablis = data;
-      // console.log(this.tablis);
+    // 首先判断本地缓存中有没有数据,如果直接拿取数据
+    let Active = JSON.parse(localStorage.getItem('Active'));
+    if (Active) {
+      this.tablis = Active;
       this.gettablis(this.tablis[this.active].id);
+      return;
     }
+    this.gettablis(this.tablis[this.active].id);
+    this.render();
   },
   methods: {
+    async render() {
+      let Active = JSON.parse(localStorage.getItem('Active'));
+      if (Active) {
+        this.tablis = Active;
+        this.gettablis(this.tablis[this.active].id);
+        return;
+      }
+      const res = await this.$axios.get('/category');
+      const { data, statusCode } = res.data;
+      if (statusCode == 200) {
+        this.tablis = data;
+        console.log(this.tablis);
+        this.gettablis(this.tablis[this.active].id);
+      }
+    },
     async onLoad() {
-      console.log('发送请求');
+      // console.log('发送请求');
       this.pageindex++;
       this.gettablis(this.tablis[this.active].id);
     },
@@ -86,12 +110,21 @@ export default {
         this.tabnav = [...this.tabnav, ...data];
         // 如果请求成功,添加数据并且将loading改成false
         this.loading = false;
-        console.log(this.tabnav);
+        // console.log(this.tabnav);
       }
       if (data.length < this.pagesize) {
         // 拿去的数据的长度小于pageSize,说明没有数据了,将finished改城true ,显示没有更多了
         this.finished = true;
       }
+    },
+    onRefresh() {
+      this.pageindex = 0;
+      this.tabnav = [];
+      this.finished = false;
+      this.loading = true;
+      this.isLoading = false;
+      this.gettablis(this.tablis[this.active].id);
+      this.render();
     },
   },
 
@@ -102,6 +135,7 @@ export default {
       this.pageindex = 0;
       this.tabnav = [];
       this.finished = false;
+      this.loading = true;
       // console.log(this.tablis[this.active].id);
       this.gettablis(this.tablis[this.active].id);
     },

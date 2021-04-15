@@ -1,6 +1,11 @@
 <template>
   <div class="tabnav">
-    <div class="info" v-for="item in data" :key="item.id">
+    <div
+      class="info"
+      v-for="item in data"
+      :key="item.id"
+      @click="$router.push(`/detail/${item.id}`)"
+    >
       <!-- 如果是视频展示下面结构 -->
       <div class="info3" v-if="item.type == 2">
         <div class="top">{{ item.title }}</div>
